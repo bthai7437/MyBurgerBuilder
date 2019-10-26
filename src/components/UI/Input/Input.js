@@ -3,9 +3,15 @@ import InputStyle from "./Input.module.css";
 
 const input = props => {
   let inputElement = null;
+  let inValidMsg = null;
   const inputClasses = [InputStyle.InputElement];
-  if (props.invalid && props.shouldValidate) {
+  if (props.invalid && props.shouldValidate && props.touched) {
     inputClasses.push(InputStyle.Invalid);
+  }
+  if (props.invalid && props.touched) {
+    inValidMsg = (
+      <p className={InputStyle.Invalid}>Please enter valid values</p>
+    );
   }
   switch (props.elementType) {
     case "input":
@@ -57,6 +63,7 @@ const input = props => {
     <div className={InputStyle.Input}>
       <label className={InputStyle.Label}>{props.label}</label>
       {inputElement}
+      {inValidMsg}
     </div>
   );
 };
