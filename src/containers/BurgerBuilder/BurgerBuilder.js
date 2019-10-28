@@ -8,23 +8,15 @@ import Axios from "../../axios";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import WithErrorHandler from "../../hoc/WithErrorHandler/WithErrorHandler";
 import { connect } from "react-redux";
-import * as actionTypes from "../../store/Actions/actions";
+import * as burgerBuilderActions from "../../store/Actions/index";
 
 class BurgerBuilder extends Component {
   state = {
-    purchasing: false,
-    loading: false,
-    error: false
+    purchasing: false
   };
+
   componentDidMount() {
-    Axios.get("/Ingredients.json")
-      .then(res => {
-        console.log(res.data);
-        this.setState({ ingredients: res.data });
-      })
-      .catch(err => {
-        this.setState({ error: true });
-      });
+    this.props.onInitIngredients();
   }
 
   updatePurchaseState(ingredients) {
@@ -60,7 +52,7 @@ class BurgerBuilder extends Component {
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <p>Ingredients can't be loaded</p>
     ) : (
       <Spinner />
@@ -90,9 +82,6 @@ class BurgerBuilder extends Component {
         />
       );
     }
-    if (this.state.loading) {
-      orderSummary = <Spinner />;
-    }
 
     return (
       <Aux>
@@ -108,16 +97,18 @@ class BurgerBuilder extends Component {
 const mapStatetoProps = state => {
   return {
     ings: state.ingredients,
-    price: state.totalPrice
+    price: state.totalPrice,
+    error: state.error
   };
 };
 
 const mapDispatchtoProps = dispatch => {
   return {
     onIngredientAdded: ingName =>
-      dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }),
+      dispatch(burgerBuilderActions.addIngredient(ingName)),
     onIngredientRemoved: ingName =>
-      dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName })
+      dispatch(burgerBuilderActions.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
   };
 };
 
