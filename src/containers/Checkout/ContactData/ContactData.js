@@ -91,7 +91,6 @@ class ContactData extends Component {
         valid: true
       }
     },
-    loading: false,
     formIsValid: false
   };
 
@@ -151,7 +150,7 @@ class ContactData extends Component {
       });
     }
     let form = <Spinner />;
-    if (!this.state.loading) {
+    if (!this.props.loading) {
       form = (
         <form onSubmit={this.orderHandler}>
           {elementArr.map(el => (
@@ -188,14 +187,15 @@ class ContactData extends Component {
 
 const mapStatetoProps = state => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   };
 };
 
 const mapDispatchtoProps = dispatch => {
   return {
-    onOrderBurger: orderData => actions.purchaseBurgerStart(orderData)
+    onOrderBurger: orderData => dispatch(actions.purchaseBurger(orderData))
   };
 };
 
